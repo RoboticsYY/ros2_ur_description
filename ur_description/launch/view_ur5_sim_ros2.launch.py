@@ -23,10 +23,25 @@ def generate_launch_description():
 
     return LaunchDescription( [
         # Robot State Publisher
-        Node(package='robot_state_publisher', node_executable='robot_state_publisher',
+        Node(package='robot_state_publisher', executable='robot_state_publisher',
              output='screen', arguments=[urdf]),
 
+        # Joint State Publisher
+        Node(
+            package="joint_state_publisher",
+            executable="joint_state_publisher",
+            name="joint_state_publisher",
+            arguments=[
+                os.path.join(
+                    get_package_share_directory("ur_description"),
+                    'urdf', 'ur5_robot' + '.urdf'
+                )
+            ],
+            output="log",
+            parameters=[{"source_list": ["/fake_controller_joint_states"]}],
+        ),
+
         # Rviz2
-        Node(package='rviz2', node_executable='rviz2',
+        Node(package='rviz2', executable='rviz2',
              output='screen', arguments=['-d', rviz]),
     ])
